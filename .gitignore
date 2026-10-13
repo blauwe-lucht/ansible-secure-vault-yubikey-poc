@@ -1,0 +1,6 @@
+# Generated per YubiKey by the setup scripts
+id_ecdsa_sk_poc.pub
+yubikey-identity.txt
+vault-pass.age
+secret.yml
+.ansible

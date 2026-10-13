@@ -1,0 +1,16 @@
+---
+- name: Use a vaulted secret on a remote host
+  hosts: poc-target
+  gather_facts: false
+  vars_files:
+    - secret.yml
+  tasks:
+    - name: Echo secret message on the target
+      ansible.builtin.command: echo "{{ secret_message }}"
+      register: echo_result
+      changed_when: false
+
+    - name: Assert the decrypted secret made it to the target
+      ansible.builtin.assert:
+        that: echo_result.stdout == secret_message
+        success_msg: "Target says: {{ echo_result.stdout }}"
