@@ -28,5 +28,5 @@ fi
 if [ ! -f "$SECRET_FILE" ]; then
     echo 'secret_message: "Unlocked with a YubiKey touch"' > "$SECRET_FILE"
     echo "Touch your YubiKey to encrypt $SECRET_FILE."
-    ansible-vault encrypt "$SECRET_FILE"
+    ansible-vault encrypt --vault-password-file ./get-vault-pass.sh "$SECRET_FILE"
 fi

@@ -30,7 +30,7 @@ docker run -d --rm --name ansible-yubikey-poc -p 2222:22 ansible-yubikey-poc
 ### Run
 
 ``` bash
-ansible-playbook playbook.yml
+ansible-playbook --vault-password-file ./get-vault-pass.sh playbook.yml
 ```
 
 Touch the YubiKey twice when it blinks: once for the vault password, once for the SSH login.
@@ -58,7 +58,8 @@ The age identity stays in a PIV slot of the YubiKey; `ykman piv info` shows whic
 | SSH login | `ecdsa-sk` key: the private key never leaves the YubiKey | Every connection |
 | Vault password | Encrypted with [age](https://age-encryption.org/) to a key in a PIV slot via [age-plugin-yubikey](https://github.com/str4d/age-plugin-yubikey), touch policy `always` | Every decryption |
 
-- [get-vault-pass.sh](get-vault-pass.sh) decrypts `vault-pass.age`; [ansible.cfg](ansible.cfg) uses it as `vault_password_file`.
+- [get-vault-pass.sh](get-vault-pass.sh) decrypts `vault-pass.age`. It's passed with `--vault-password-file` instead of set in [ansible.cfg](ansible.cfg): Ansible calls the script on every start, even for `--syntax-check`, so tools like an IDE would fail or make the YubiKey blink.
+- [playbook.yml](playbook.yml) loads `secret.yml` with `include_vars` instead of `vars_files`, so a syntax check doesn't need to decrypt it.
 - Unlike GPG with `pass`, there is no software cache: the YubiKey itself enforces the touch.
 - One run needs 1 touch for the vault plus 1 per host. Ansible reuses the SSH connection within a run (`ControlPersist=30s`).
 

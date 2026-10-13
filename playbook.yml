@@ -2,9 +2,11 @@
 - name: Use a vaulted secret on a remote host
   hosts: poc-target
   gather_facts: false
-  vars_files:
-    - secret.yml
   tasks:
+    # Not vars_files: a syntax check would then need to decrypt it.
+    - name: Load vaulted secret
+      ansible.builtin.include_vars: secret.yml
+
     - name: Echo secret message on the target
       ansible.builtin.command: echo "{{ secret_message }}"
       register: echo_result

@@ -6,3 +6,4 @@
 - **SSH key on the YubiKey, not an SSH password in the vault** (2026-10-13): costs 1 extra touch per host, but nothing reusable leaks. A password read from Ansible's memory would give permanent access.
 - **Ansible on the host, target in Docker** (2026-10-13): passing a YubiKey into a container is fragile.
 - **`ControlPersist=30s`** (2026-10-13): one touch per host per run, short window for others to reuse the connection.
+- **Vault script passed with `--vault-password-file`, not in `ansible.cfg`; secret loaded with `include_vars`** (2026-10-13): Ansible calls the vault script on every start, even for `--syntax-check`, and `vars_files` are decrypted while parsing. The IDE's background syntax check failed with exit code 1.
